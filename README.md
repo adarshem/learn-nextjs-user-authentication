@@ -2,7 +2,7 @@
 
 Welcome to the **Learn Next.js User Authentication** project! This is a study project aimed at understanding and implementing **user authentication and authorization** in a Next.js application. The project uses **Lucia Auth** for authentication logic and **better-sqlite3** as the database for storing user details.
 
-![Screenshot 2025-02-01 at 3 29 55 PM](https://github.com/user-attachments/assets/32320b54-ba8d-4fd4-97cc-111134a0add0)
+![Screenshot 2025-02-01 at 3 33 37 PM](https://github.com/user-attachments/assets/d6c0f6d2-e438-45fe-ac68-85bdcd8a9594)
 
 
 
