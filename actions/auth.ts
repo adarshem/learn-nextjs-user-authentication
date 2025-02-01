@@ -3,6 +3,7 @@ import { createUser } from '@/lib/user';
 import { hashUserPassword } from '@/lib/hash';
 import { redirect } from 'next/navigation';
 import { SqliteError } from 'better-sqlite3';
+import { createAuthSession } from '@/lib/auth';
 
 export async function userSignup(
   _prevFormData: { errors: string[] },
@@ -25,6 +26,8 @@ export async function userSignup(
 
   try {
     const userId = createUser(email, hashUserPassword(password));
+    await createAuthSession(String(userId));
+    redirect('/training');
   } catch (error) {
     if (
       error instanceof SqliteError &&
@@ -36,6 +39,4 @@ export async function userSignup(
 
     throw error;
   }
-
-  redirect('/training');
 }
