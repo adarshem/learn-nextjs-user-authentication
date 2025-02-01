@@ -1,9 +1,9 @@
 'use server';
-import { createUser } from '@/lib/user';
-import { hashUserPassword } from '@/lib/hash';
+import { createUser, getUserByEmail } from '@/lib/user';
+import { hashUserPassword, verifyPassword } from '@/lib/hash';
 import { redirect } from 'next/navigation';
 import { SqliteError } from 'better-sqlite3';
-import { createAuthSession } from '@/lib/auth';
+import { createAuthSession, destroyAuthSession } from '@/lib/auth';
 
 export async function userSignup(
   _prevFormData: { errors: string[] },
@@ -39,4 +39,45 @@ export async function userSignup(
 
     throw error;
   }
+}
+
+export async function userLogin(
+  _prevFormData: { errors: string[] },
+  formData: FormData
+) {
+  const email = formData.get('email') as string;
+  const password = formData.get('password') as string;
+  const existingUser = getUserByEmail(email);
+
+  if (!existingUser) {
+    return { errors: ['User not found'] };
+  }
+
+  const isValidPassword = verifyPassword(existingUser.password, password);
+
+  if (!isValidPassword) {
+    return { errors: ['Invalid password'] };
+  }
+
+  await createAuthSession(String(existingUser.id));
+  redirect('/training');
+}
+
+export async function auth(
+  mode: string,
+  _prevState: { errors: string[] },
+  formData: FormData
+) {
+  if (mode === 'login') {
+    return userLogin(_prevState, formData);
+  } else {
+    return userSignup(_prevState, formData);
+  }
+}
+
+export async function logout() {
+  // remove the session from the database
+  // redirect to the login page
+  await destroyAuthSession();
+  redirect('/');
 }

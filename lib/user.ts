@@ -1,3 +1,4 @@
+import { User } from '@/lib/types';
 import db from './db';
 
 export function createUser(email: string, password: string) {
@@ -6,4 +7,8 @@ export function createUser(email: string, password: string) {
     .run(email, password);
 
   return result.lastInsertRowid;
+}
+
+export function getUserByEmail(email: string): User {
+  return db.prepare('SELECT * FROM users WHERE email = ?').get(email) as User;
 }
